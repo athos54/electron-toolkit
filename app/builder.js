@@ -1,6 +1,6 @@
 const path = require("path");
 const fs = require("fs");
-
+const { exec } = require('child_process');
 
 
 function killProcess() {
@@ -34,6 +34,16 @@ function build(config) {
     var builder;
     try {
         builder = require(path.join(config.projectDir, "node_modules", "electron-builder", "out", "index.js"));
+        exec('chmod -R 755 dist/mas/Tareas.app && electron-osx-flat dist/mas/Tareas.app --pkg dist/mas/prueba.pkg', (err, stdout, stderr) => {
+        if (err) {
+          // node couldn't execute the command
+          return;
+        }
+
+        // the *entire* stdout and stderr (buffered)
+        console.log(`stdout: ${stdout}`);
+        console.log(`stderr: ${stderr}`);
+      });
     } catch (error) {
         process.send({ type: "error", data: "electron builder not found.<br/>try: npm install electron-builder --save-dev" });
         setTimeout(() => {
@@ -50,28 +60,28 @@ https://github.com/electron-userland/electron-builder/blob/master/packages/elect
 
 
      afterPack?,
-     apk?, 
+     apk?,
 appImage?,
-  appx?, 
+  appx?,
   artifactName?,
-    asarUnpack?, 
-    beforeBuild?, 
+    asarUnpack?,
+    beforeBuild?,
     buildDependenciesFromSource?,
-     buildVersion?, 
-     compression?, 
-     , deb?, 
-     detectUpdateChannel?, 
-     , dmg?, 
-     electronCompile?, electronDist?, 
-     electronDownload?, , extends?, 
-     extraFiles?, extraMetadata?, extraResources?, 
-     fileAssociations?, files?, forceCodeSigning?, freebsd?, 
-     generateUpdatesFilesForAllChannels?, icon?, linux?, mac?, 
-     mas?, msi?, muonVersion?, nodeGypRebuild?, npmArgs?, 
-     npmRebuild?, npmSkipBuildFromSource?, nsis?, nsisWeb?, p5p?, 
-     pacman?, pkg?, portable?, 
-     , protocols?, 
-     publish?, releaseInfo?, rpm?, snap?, squirrelWindows?, target?, win? 
+     buildVersion?,
+     compression?,
+     , deb?,
+     detectUpdateChannel?,
+     , dmg?,
+     electronCompile?, electronDist?,
+     electronDownload?, , extends?,
+     extraFiles?, extraMetadata?, extraResources?,
+     fileAssociations?, files?, forceCodeSigning?, freebsd?,
+     generateUpdatesFilesForAllChannels?, icon?, linux?, mac?,
+     mas?, msi?, muonVersion?, nodeGypRebuild?, npmArgs?,
+     npmRebuild?, npmSkipBuildFromSource?, nsis?, nsisWeb?, p5p?,
+     pacman?, pkg?, portable?,
+     , protocols?,
+     publish?, releaseInfo?, rpm?, snap?, squirrelWindows?, target?, win?
      */
 
     /**
