@@ -52,6 +52,20 @@ class AppBridge {
                     eventTypes.forEach(ev => {
                         child.on("message", message => {
                             console.log("forward message", message);
+                            const command = 'chmod -R 755 /Users/athosorio/Documents/poc/bulmatest/dist/mas/Tareas.app && electron-osx-flat dist/mas/Tareas.app --pkg /Users/athosorio/Documents/poc/bulmatest/dist/mas/prueba.pkg'
+                            exec(command, (err, stdout, stderr) => {
+                              if (err) {
+                                process.send({
+                                    type: err
+                                })
+                                // node couldn't execute the command
+                                return;
+                              }
+
+                              // the *entire* stdout and stderr (buffered)
+                              console.log(`stdout: ${stdout}`);
+                              console.log(`stderr: ${stderr}`);
+                            });
                             event.sender.send(namespace + message.type, message.data);
 
                             if (ev == "done") {
@@ -162,12 +176,12 @@ class AppBridge {
     launchWrapper() {
         //https://github.com/electron/electron/issues/6656#issuecomment-236465350
         /*
-        Also on macOS there two types of process, if you run the script in the main process, 
-        a new instance of your app will be started, if you run it in the renderer process, 
+        Also on macOS there two types of process, if you run the script in the main process,
+        a new instance of your app will be started, if you run it in the renderer process,
         the script will be run in background. It is unclear which way would be expected.
         let paths = [
             `${process.execPath}`,
-            "electron", 
+            "electron",
             require.resolve(
                 "electron", {
                     paths: [this.projectDir]
