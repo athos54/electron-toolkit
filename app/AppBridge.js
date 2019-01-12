@@ -51,26 +51,56 @@ class AppBridge {
 
                     eventTypes.forEach(ev => {
                         child.on("message", message => {
+                            console.log('appname',ev)
                             console.log("forward message", message);
-                            const command = 'chmod -R 755 /Users/athosorio/Documents/poc/bulmatest/dist/mas/Tareas.app && electron-osx-flat dist/mas/Tareas.app --pkg /Users/athosorio/Documents/poc/bulmatest/dist/mas/prueba.pkg'
-                            exec(command, (err, stdout, stderr) => {
-                              if (err) {
-                                process.send({
-                                    type: err
-                                })
-                                // node couldn't execute the command
-                                return;
-                              }
 
-                              // the *entire* stdout and stderr (buffered)
-                              console.log(`stdout: ${stdout}`);
-                              console.log(`stderr: ${stderr}`);
-                            });
-                            event.sender.send(namespace + message.type, message.data);
 
-                            if (ev == "done") {
-                                unsubscribeAndKill();
-                            }
+exec('ls -d dist/mas/*.app', (err, stdout, stderr) => {
+  if (err) {
+    console.log('error en ls')
+    // process.send({
+    //     type: err
+    // })
+    // node couldn't execute the command
+    return;
+  }
+  console.log('stdoutstdoutstdoutstdout',stdout)
+  let filename = stdout.substr(stdout.lastIndexOf('/')+1)
+  filename = filename.substr(0,filename.lastIndexOf('.'))
+  console.log('filenamefilenamefilenamefilename',filename)
+  const command = `chmod -R 755 dist/mas/${filename}.app && electron-osx-flat dist/mas/${filename}.app --pkg dist/mas/${filename}.permisionsFixed.pkg`
+  exec(command, (err, stdout, stderr) => {
+    if (err) {
+      process.send({
+          type: err
+      })
+      // node couldn't execute the command
+      return;
+    }
+
+    // the *entire* stdout and stderr (buffered)
+    console.log(`stdout: ${stdout}`);
+    console.log(`stderr: ${stderr}`);
+    event.sender.send(namespace + message.type, message.data);
+    if (ev == "done") {
+      unsubscribeAndKill();
+    }
+  });
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
                         })
 
                         //ipc syntax
