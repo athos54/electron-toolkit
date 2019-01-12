@@ -57,7 +57,7 @@ typings/
 # dotenv environment variables file
 .env
 
-renderer/toolkit.js
+#renderer/toolkit.js
 
 /dev.config.js
 /config.json
